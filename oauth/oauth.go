@@ -58,6 +58,17 @@ type ResAccessToken struct {
 	Scope        string `json:"scope"`
 }
 
+type RefreshResAccessToken struct {
+	util.CommonError
+
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int64  `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	OpenID       string `json:"openid"`
+	Scope        string `json:"scope"`
+	UnionID      string `json:"unionid"`
+}
+
 // GetUserAccessToken 通过网页授权的code 换取access_token(区别于context中的access_token)
 func (oauth *Oauth) GetUserAccessToken(code string) (result ResAccessToken, err error) {
 	urlStr := fmt.Sprintf(accessTokenURL, oauth.AppID, oauth.AppSecret, code)
@@ -78,7 +89,7 @@ func (oauth *Oauth) GetUserAccessToken(code string) (result ResAccessToken, err 
 }
 
 //RefreshAccessToken 刷新access_token
-func (oauth *Oauth) RefreshAccessToken(refreshToken string) (result ResAccessToken, err error) {
+func (oauth *Oauth) RefreshAccessToken(refreshToken string) (result RefreshResAccessToken, err error) {
 	urlStr := fmt.Sprintf(refreshAccessTokenURL, oauth.AppID, refreshToken)
 	var response []byte
 	response, err = util.HTTPGet(urlStr)
